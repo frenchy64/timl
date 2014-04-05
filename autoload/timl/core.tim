@@ -123,7 +123,6 @@
   ([f c1 c2 c3 & colls]
      (into [] (apply map f c1 c2 c3 colls))))
 
-
 (defn dorun
   ([coll]
    (when (seq coll)
