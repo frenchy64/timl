@@ -62,6 +62,19 @@
   ([x] x)
   ([x & xs] `(let [and# ~x] (if and# (and ~@xs) and#))))
 
+(defmacro cond [& clauses]
+  (when (seq clauses)
+    (list 'if (first clauses)
+          (first (rest clauses))
+          (cons `cond (rest (rest clauses))))))
+
+(defn every?
+  [pred coll]
+  (cond
+   (nil? (seq coll)) true
+   (pred (first coll)) (recur pred (next coll))
+   :else false))
+
 (defn map 
   ([f coll]
    (lazy-seq
@@ -91,6 +104,13 @@
                       (cons (map first ss) (step (map rest ss)))))))]
      (map #(apply f %) (step (conj colls c3 c2 c1))))))
 
+(defmacro -> [x & forms]
+  (if (seq forms)
+    (let [form (first forms)
+          more (next forms)] (if more `(-> (-> ~x ~form) ~@more) (if (list? form)
+          `(~(first form) ~x ~@(rest form))
+          (list form x))))
+    x))
 
 (defn mapv
   ([f coll]

@@ -11,20 +11,6 @@
 (defmacro when-not [cond & body]
   (list 'if cond nil (cons 'do body)))
 
-(defmacro cond [& clauses]
-  (when (seq clauses)
-    (list 'if (first clauses)
-          (first (rest clauses))
-          (cons `cond (rest (rest clauses))))))
-
-(defmacro -> [x & forms]
-  (if (seq forms)
-    (let [form (first forms)
-          more (next forms)] (if more `(-> (-> ~x ~form) ~@more) (if (list? form)
-          `(~(first form) ~x ~@(rest form))
-          (list form x))))
-    x))
-
 (defmacro binding [bindings & body]
   (if (seq bindings)
     `(let [old# ~(first bindings)]
